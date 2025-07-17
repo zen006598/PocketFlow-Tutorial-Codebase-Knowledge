@@ -13,10 +13,14 @@ PocketFlow-Tutorial-Codebase-Knowledge/
 ├── main.py                    # Entry point - CLI argument parsing and pipeline execution
 ├── flow.py                    # Flow definition - connects nodes in sequence
 ├── nodes.py                   # Core pipeline nodes (FetchRepo, IdentifyAbstractions, etc.)
-├── requirements.txt           # Python dependencies
-├── Dockerfile                 # Docker containerization
-├── README.md                  # Project documentation
-├── CLAUDE.md                  # This file - guidance for Claude Code
+├── pyproject.toml            # Project configuration and dependencies (uv format)
+├── uv.lock                   # Dependency lock file (uv format)
+├── Dockerfile                # Docker containerization
+├── README.md                 # Project documentation
+├── .claude/                  # Claude Code configuration directory
+│   ├── CLAUDE.md            # This file - guidance for Claude Code
+│   ├── rules.md             # Agentic coding principles and methodology
+│   └── project_structure.xml # Detailed project structure (generated)
 ├── utils/
 │   ├── __init__.py
 │   ├── call_llm.py           # LLM interface with caching and multiple providers
@@ -37,29 +41,32 @@ PocketFlow-Tutorial-Codebase-Knowledge/
 ### Running the Application
 ```bash
 # Analyze a GitHub repository
-python main.py --repo https://github.com/username/repo --include "*.py" "*.js" --exclude "tests/*" --max-size 50000
+uv run python main.py --repo https://github.com/username/repo --include "*.py" "*.js" --exclude "tests/*" --max-size 50000
 
 # Analyze a local directory
-python main.py --dir /path/to/your/codebase --include "*.py" --exclude "*test*"
+uv run python main.py --dir /path/to/your/codebase --include "*.py" --exclude "*test*"
 
 # Generate tutorial in another language
-python main.py --repo https://github.com/username/repo --language "Chinese"
+uv run python main.py --repo https://github.com/username/repo --language "Chinese"
 
 # Control abstraction count and caching
-python main.py --repo https://github.com/username/repo --max-abstractions 15 --no-cache
+uv run python main.py --repo https://github.com/username/repo --max-abstractions 15 --no-cache
 ```
 
 ### Setup and Testing
 ```bash
-# Install dependencies
-pip install -r requirements.txt
+# Install dependencies (uv will automatically create virtual environment)
+uv sync
 
 # Test LLM connection (verifies API key and model access)
-python utils/call_llm.py
+uv run python utils/call_llm.py
 
 # Test file crawling utilities
-python utils/crawl_github_files.py
-python utils/crawl_local_files.py
+uv run python utils/crawl_github_files.py
+uv run python utils/crawl_local_files.py
+
+# Alternative: Install dependencies if pyproject.toml has changed
+uv install
 ```
 
 ### Docker
